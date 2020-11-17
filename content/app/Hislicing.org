@@ -1,4 +1,5 @@
-#+TITLE: History Slicing
+#+TITLE: Semantic History Slicing
+#+weight: 10
 
 Semantic history slicing identifies the commits related to a particular high-level functional slicing criteria in change histories. In one concrete instantiation, a slicing criteria is defined in terms of a set of tests; a particular functionality is considered to be implemented if its corresponding set of tests pass. A semantic history slice (or slice for short) of the original change history is then a sub-sequence of H′ ⊆ H, i.e. a set of related commits required for the tests to pass.
 
