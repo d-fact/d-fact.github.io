@@ -1,0 +1,16 @@
+baseURL = "https://wuxh.me/factbase-site/"
+languageCode = "en-us"
+title = "Differential Facts"
+
+theme = "hugo-geekdoc"
+# theme = "hugonews"
+pygmentsUseClasses = true
+pygmentsCodeFences = true
+
+disablePathToLower = true
+enableGitInfo=false
+
+[params]
+geekdocSearch = false
+geekdocToC = 2
+geekdocDateFormat = "2006-01-02"

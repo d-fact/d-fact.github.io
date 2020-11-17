@@ -1,0 +1,54 @@
+#+TITLE: History Slicing
+
+Semantic history slicing identifies the commits related to a particular high-level functional slicing criteria in change histories. In one concrete instantiation, a slicing criteria is defined in terms of a set of tests; a particular functionality is considered to be implemented if its corresponding set of tests pass. A semantic history slice (or slice for short) of the original change history is then a sub-sequence of H′ ⊆ H, i.e. a set of related commits required for the tests to pass.
+
+** Functional slicing criteria
+   A functional slicing criteria corresponds to software changes with a specific intention, such as fixing a bug or adding a new feature.
+   In practice, a criteria can be defined by a set of testcases demonstrating the specific intention.
+
+*** Example: CSV-159
+[[https://issues.apache.org/jira/projects/CSV/issues/CSV-159][Apache Issues: CSV-159]] is a pull request adding a specific feature: reading CSV headers in case-insensitive way,
+which is implemented with a newly-added method =CSVFormat withIgnoreHeaderCase(boolean)=
+and other auxiliary modifications.
+
+A unit test is also included as below, which can serve as the slicing criteria.
+#+begin_src java
+@Test
+public void testIgnoreCaseHeaderMapping() throws Exception {
+    final Reader in = new StringReader("1,2,3");
+    final Iterator<CSVRecord> records = CSVFormat.DEFAULT.withHeader("One", "TWO", "three").withIgnoreHeaderCase()
+	    .parse(in).iterator();
+    final CSVRecord record = records.next();
+    assertEquals("1", record.get("one"));
+    assertEquals("2", record.get("two"));
+    assertEquals("3", record.get("THREE"));
+}
+#+end_src
+
+Suppose a change history =b230a6f5..7310e5c6= is given,
+and it is known that the testcase above can pass at =7310e5c6=,
+the goal of history slicing is to select a slice, i.e., a sub-sequence of commits,
+so that the testcase can still pass after the slice were
+applied on =b230a6f5=.
+
+** Functional set
+
+*** Test Coverage
+    The snippet below is part of the facts representing test coverage.
+#+begin_src
+Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.getIgnoreHeaderCase(0)"
+Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVParser.iterator(0)"
+Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.withIgnoreHeaderCase(1)"
+Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.withAllowMissingColumnNames(0)"
+#+end_src
+
+In the following TA program, =testName= is "test-CSV159-7310e5c6",
+and =cov= will be all program entities covered by this test,
+given there are Coverage facts about multiple tests in the input factbase.
+#+begin_src
+print "find covered entities of test:";
+print testName;
+cov = {testName} . Coverage
+#+end_src
+
+** Compilation set

@@ -1,0 +1,21 @@
+#+TITLE: Overview of Extractors
+#+weight: 10
+
+Extractors are used to produce "basic" knowledge (facts) about input (source code, bytecode, VCS logs, etc.)
+in textual formats so that they can be used in next phase processing or analyses.
+
+Some extractors are language-independent, i.e., do not process code or irrelavent to language features, such as those generating facts about [[file:../hunkdep][hunk dependencies]].
+
++ hunk dependency
++ history dependency
+
+Other extractors are language-dependent,
+which usually rely on part of the toolchain of specific languages.
+
+Currently, extractors for C/C++ and Java collecting following
++ Atomic changes
++ Static dependency
++ Test coverage
+
+Thanks to the design that decouples facts extraction and analyses,
+extractors can be implemented using any language.

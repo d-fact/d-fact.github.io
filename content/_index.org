@@ -1,0 +1,8 @@
+#+TITLE: Introduction
+#+DATE: "2020-09-17"
+
+* Software Evolution Management with Differential Facts 
+Differential facts is a uniform exchangeable representation of software changes supporting efficient querying and manipulation, based on the existing concept of program facts. 
+Together with intra-version facts, we can store and then analyze abundant information about software evolution, 
+thus lots of questions can be answered by querying related facts.
+
