@@ -1,0 +1,115 @@
+#+TITLE: Lifted Pointer Analysis
+#+weight: 50
+
+
+** Time usage decomposition
+
+   Lifted analysis on multiple versions consists of three steps:
+   + Extract facts on each version
+   + Merge into version-annotated representation
+   + Run lifted Analysis on version-annotated facts
+
+   Time decomposition by each step is shown below:
+| Project  | Extract | Merge | Analysis |
+|----------+---------+-------+----------|
+| CSV      |  93.88% | 0.14% |    5.98% |
+| IO       |     93% |  0.6% |     6.4% |
+| CONFIG   |  97.37% |  0.6% |    2.03% |
+| COMPRESS |  91.52% | 1.63% |    6.85% |
+| LANG     |  90.97% | 1.83% |     7.2% |
+| NET      |  92.61% | 0.92% |    6.47% |
+   Usually the extraction step costs the most of the time.
+   However, the facts extraction only need to be done once,
+   and both the original Doop and the lifted analysis need to do
+   the extraction for each version.
+   Therefore, we compare time used by (merging + lifted analysis)
+   vs. (original analysis) on 10 versions.
+** Facts used for pointer analysis
+
+Facts used for lifed pointer analysis comes from 
+[[https://bitbucket.org/yanniss/doop/src/master/][Doop]].
+
+An example can be seen in [[https://github.com/d-fact/tse-eval/tree/main/pointer-analysis/facts][github/d-fact/tse-eval]].
+
+#+begin_src Prolog
+.decl _ActualParam(?index:number, ?invocation:symbol, ?var:symbol)
+.decl _ApplicationClass(?type:symbol)
+.decl _ArrayInsnIndex(?instruction:symbol, ?index:symbol)
+.decl _ArrayType(?arrayType:symbol)
+.decl _AssignBinop(?instruction:symbol, ?index:number, ?to:symbol, ?inmethod:symbol)
+.decl _AssignCast(?instruction:symbol, ?index:number, ?from:symbol, ?to:symbol, ?type:symbol, ?inmethod:symbol)
+.decl _AssignCastNull(?instruction:symbol, ?index:number, ?to:symbol, ?type:symbol, ?method:symbol)
+.decl _AssignCastNumConstant(?instruction:symbol, ?index:number, ?const:symbol, ?to:symbol, ?type:symbol, ?inmethod:symbol)
+.decl _AssignHeapAllocation(?instruction:symbol, ?index:number, ?heap:symbol, ?to:symbol, ?inmethod:symbol, ?linenumber:number)
+.decl _AssignInstanceOf(?instruction:symbol, ?index:number, ?from:symbol, ?to:symbol, ?type:symbol, ?inmethod:symbol)
+.decl _AssignLocal(?instruction:symbol, ?index:number, ?from:symbol, ?to:symbol, ?inmethod:symbol)
+.decl _AssignNull(?instruction:symbol, ?index:number, ?to:symbol, ?method:symbol)
+.decl _AssignNumConstant(?instruction:symbol, ?index:number, ?const:symbol, ?to:symbol, ?inmethod:symbol)
+.decl _AssignOperFrom(?instruction:symbol, ?pos: number, ?from:symbol)
+.decl _AssignPhantomInvoke(?instruction:symbol, ?index:number, ?method:symbol)
+.decl _AssignReturnValue(?invocation:symbol, ?to:symbol)
+.decl _AssignUnop(?instruction:symbol, ?index:number, ?to:symbol, ?inmethod:symbol)
+.decl _BootstrapParam(?index:number, ?invocation:symbol, ?var:symbol)
+.decl _BreakpointStmt(?instruction:symbol, ?index:number, ?method:symbol)
+.decl _ClassHeap(?id:symbol, ?instanceType:symbol)
+.decl _ClassModifier(?class:symbol, ?modifier:symbol)
+.decl _ClassType(?class:symbol)
+.decl _ComponentType(?arrayType:symbol, ?componentType:symbol)
+.decl _DirectSuperclass(?class:symbol, ?superclass:symbol)
+.decl _DirectSuperinterface(?class:symbol, ?interface:symbol)
+.decl _DummyIfVar(?instruction:symbol, ?var:symbol)
+.decl _DynamicMethodInvocation_DynParamType(?invocation:DynamicMethodInvocation_Insn, ?idx:number, ?pType:symbol)
+.decl _DynamicMethodInvocation(?instruction:symbol, ?index:number, ?bootSignature:symbol, ?dynName:symbol, ?dynRetType:symbol, ?dynArity:number, ?dynParamTypes:symbol, ?tag:number, ?method:symbol)
+.decl _EmptyArray(?id:symbol)
+.decl _EnterMonitor(?instruction:symbol, ?index:number, ?var:symbol, ?method:symbol)
+.decl _ExceptionHandler(?handler:symbol, ?method:symbol, ?index:number, ?type:symbol, ?var:symbol, ?begin:number, ?end:number)
+.decl _ExceptionHandler_Previous(?handler:symbol, ?previous:symbol)
+.decl _ExitMonitor(?instruction:symbol, ?index:number, ?var:symbol, ?method:symbol)
+.decl _Field_Modifier(?modifier:symbol, ?field:symbol)
+.decl _Field(?signature:symbol, ?declaringClass:symbol, ?simplename:symbol, ?type:symbol)
+.decl _FormalParam(?index:number, ?method:symbol, ?var:symbol)
+.decl _Goto(?instruction:symbol, ?index:number, ?to:number, ?method:symbol)
+.decl _If(?instruction:symbol, ?index:number, ?to:number, ?method:symbol)
+.decl _IfVar(?instruction:symbol, ?pos:number, ?var:symbol)
+.decl _InterfaceType(?interface:symbol)
+.decl _LoadArrayIndex(?instruction:symbol, ?index:number, ?to:symbol, ?base:symbol, ?method:symbol)
+.decl _LoadInstanceField(?instruction:symbol, ?index:number, ?to:symbol, ?base:symbol, ?signature:symbol, ?method:symbol)
+.decl _LoadStaticField(?instruction:symbol, ?index:number, ?to:symbol, ?signature:symbol, ?method:symbol)
+.decl _LookupSwitch_DefaultTarget(?instruction:symbol, ?target:number)
+.decl _LookupSwitch(?instruction:symbol, ?index:number, ?key:symbol, ?method:symbol)
+.decl _LookupSwitch_Target(?instruction:symbol, ?value:number, ?target:number)
+.decl _MainClass(?class:symbol)
+.decl _Method_DeclaresException(?exceptionType:symbol, ?method:symbol)
+.decl _MethodHandleConstant(?id:symbol, ?method:symbol)
+.decl _MethodInvocation_Line(?instruction:symbol, line:number)
+.decl _Method(?method:symbol, ?simplename:symbol, ?descriptor:symbol, ?declaringType:symbol, ?returnType:symbol, ?jvmDescriptor:symbol, ?arity:number)
+.decl _Method_Modifier(?mod:symbol, ?method:symbol)
+.decl _MethodTypeConstant(?id:symbol, ?arity:number)
+.decl _NativeReturnVar(?var:symbol, ?method:symbol)
+.decl _NormalHeap(?id:symbol, ?type:symbol)
+.decl _OperatorAt(?instruction:symbol, ?operator:symbol)
+.decl PhantomBasedMethod(?m:Method)
+.decl PhantomMethod(?m:Method)
+.decl PhantomType(?t:Type)
+.decl _Properties(?path:symbol, ?key:symbol, ?value:symbol)
+.decl _Return(?instruction:symbol, ?index:number, ?var:symbol, ?method:symbol)
+.decl _ReturnVoid(?instruction:symbol, ?index:number, ?method:symbol)
+.decl _SpecialMethodInvocation(?instruction:symbol, ?index:number, ?signature:symbol, ?base:symbol, ?method:symbol)
+.decl _StaticMethodInvocation(?instruction:symbol, ?index:number, ?signature:symbol, ?method:symbol)
+.decl _StoreArrayIndex(?instruction:symbol, ?index:number, ?from:symbol, ?base:symbol, ?method:symbol)
+.decl _StoreInstanceField(?instruction:symbol, ?index:number, ?from:symbol, ?base:symbol, ?signature:symbol, ?method:symbol)
+.decl _StoreStaticField(?instruction:symbol, ?index:number, ?from:symbol, ?signature:symbol, ?method:symbol)
+.decl _StringConstant(?id:symbol)
+.decl _StringRaw(?id:symbol, ?rawId:symbol)
+.decl _SuperMethodInvocation(?instruction:symbol, ?index:number, ?signature:symbol, ?base:symbol, ?method:symbol)
+.decl _TableSwitch_DefaultTarget(?instruction:symbol, ?target:number)
+.decl _TableSwitch(?instruction:symbol, ?index:number, ?key:symbol, ?method:symbol)
+.decl _TableSwitch_Target(?instruction:symbol, ?value:number, ?target:number)
+.decl _ThisVar(?method:symbol, ?var:symbol)
+.decl _Throw(?instruction:symbol, ?index:number, ?var:symbol, ?method:symbol)
+.decl _ThrowNull(?instruction:symbol, ?index:number, ?method:symbol)
+.decl _UnsupportedInstruction(?instruction:symbol, ?index:number, ?method:symbol)
+.decl _Var_DeclaringMethod(?var:symbol, ?method:symbol)
+.decl _Var_Type(?var:symbol, ?type:symbol)
+.decl _VirtualMethodInvocation(?instruction:symbol, ?index:number, ?signature:symbol, ?base:symbol, ?method:symbol)
+#+end_src

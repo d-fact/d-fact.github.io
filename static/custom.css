@@ -1,10 +1,10 @@
 .gdoc-header {
     background: #e66a4e;
     border-color: #404040;
-    font-family: "Optima", "Helvetica", "Arial", "Noto Sans", "Liberation Sans", sans
+    font-family: "Optima", "Dejavu Sans", "Noto Sans", "Helvetica", "Arial", sans
 }
 .gdoc-footer{
-    font-family: "Optima", "Helvetica", "Arial", "Noto Sans", "Liberation Sans", sans
+    font-family: "Optima", "Dejavu Sans", "Noto Sans", "Helvetica", "Arial", sans
 }
 /* .gdoc-header__link, .gdoc-header__link:visited { color: #ffffff; } */
 
@@ -20,18 +20,18 @@ html {
 h1,h2,h3,h4,h5,h6 {
     font-weight: 400;
     /* font-family: Georgia, Cambria, "Times New Roman", Times, serif; */
-    font-family: "Optima", "Helvetica", "Arial", "Noto Sans", "Liberation Sans", sans;
+    font-family: "Optima", "Dejavu Sans", "Noto Sans", "Helvetica", "Arial", sans
 }
 body {
     color: black;
     font-weight: 400;
-    font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+    font-family: "Palatino", "Dejavu Serif", Georgia, Cambria, serif;
     /* "Iowan Old Style", "Georgia", "Noto Serif", serif */
     -webkit-font-smoothing: auto;
     -moz-font-smoothing: auto;
 }
 code {
-    font-family: "Monaco", "Consolas", "Fira Mono", "Fira Code", "Liberation Mono", monospace;
+    font-family: "Consolas", "Monaco", "Fira Mono", "Fira Code", "Dejavu Sans Mono", monospace;
 }
 
 .gdoc-nav__entry.is-active, .gdoc-nav__entry:hover {

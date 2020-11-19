@@ -1,4 +1,115 @@
 #+TITLE: Change Impact Analysis
 #+weight: 20
 
+We implement Change Impact Analysis on the library upgrade scenario,
+where we try to find out the client classes affected by a library upgrade.
+
+This experiment is done to implement a light-weight solution for the 
+[[https://dl.acm.org/doi/10.1145/3238147.3238178][upgrade compatibility checking]] problem:
+
++ Using facts and query scripts to find out the client classes affected by the 
+library upgrade;
+
++ Running facts-guided test generation, i.e., guide test generator 
+  ([[https://github.com/EvoSuite/evosuite][EvoSuite]] was used)
+  to only use these affected test classes as the test targets;
+
++ Compare the results of guided test generation with those original EvoSuite,
+measuring how many test generation targets are pruned. The more classes pruned,
+the fewer test generation targets needed to be handled, leadingt to greater
+improvement on the efficiency.
+
+Scripts for running experiments are also included in [[https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/evosuite-eval-pipeline/run-pipeline.py][bitbucket:gitslice/run-pipeline.py]].
+
+** Subjects
+Ten <cli, lib, lib'> tuples are selected from the [[https://dblp.org/rec/conf/issre/GyoriLHM18.html][library upgrade dataset]]
+created by Gyori et al.  The selection criterion is for each tuple, upgrading
+lib to lib' should make at least one developer-written test of the cli flip from
+pass (✔) to fail (✘).  
+We use this criterion because it guarantees that all the subjects
+we select for sure have upgrade compatibility issues.
+
+All URLs in the table begin with =github.com=.
+
+| ID   | Client               | SHA      | URL                            | Library                         |     Ver (lib) |    Ver (lib') |
+|------+----------------------+----------+--------------------------------+---------------------------------+---------------+---------------|
+| CT1  | closure-templates    | d10daa56 | google/closure-templates       | args4j:args4j                   |        2.0.23 |          2.33 |
+| CT2  | ebean                | 04e0069e | ebean-orm/ebean                | org.slf4j:slf4j-api             |        1.7.25 |  2.0.0-alpha0 |
+| CT3  | extentreports-java   | 61115256 | anshooarora/extentreports-java | org.jsoup:jsoup                 |         1.9.2 |        1.12.1 |
+| CT4  | jafka                | a9ee7d90 | adyliu/jafka                   | net.sf.jopt-simple:jopt-simple  |         5.0.4 |   6.0-alpha-3 |
+| CT5  | jasmine-maven-plugin | ce365e7c | searls/jasmine-maven-plugin    | org.slf4j:slf4j-api             |        1.7.21 |  2.0.0-alpha0 |
+| CT6  | jdeb                 | 7d07c1c5 | tcurdt/jdeb                    | org.bouncycastle:bcpg-jdk15on   |          1.60 |          1.62 |
+| CT7  | Mybatis-PageHelper   | f4df55cc | pagehelper/Mybatis-PageHelper  | org.mybatis:mybatis             |         3.4.4 |         3.5.2 |
+| CT8  | restheart            | d7877495 | SoftInstigate/restheart        | org.mongodb:mongodb-driver      |         3.6.0 |        3.11.0 |
+| CT9  | photon               | de5611cc | komoot/photon                  | org.springframework:spring-jdbc | 4.0.0.RELEASE | 5.1.9.RELEASE |
+| CT10 | secor                | 93097322 | pinterest/secor                | org.apache.hadoop:hadoop-common |         2.7.0 |         3.2.0 |
+
+
+
+** Results
+| ID    |    #CC |   #AC | %Reduction |     #T |  #FT |
+|-------+--------+-------+------------+--------+------|
+| CT1   |   1122 |    10 |      99.11 |     63 |    3 |
+| CT2   |   1481 |    64 |      95.68 |   1282 |    0 |
+| CT3   |     92 |     6 |      93.48 |     42 |    3 |
+| CT4   |    232 |     7 |      96.98 |     48 |    0 |
+| CT5   |     92 |     9 |      90.22 |     14 |    0 |
+| CT6   |     50 |     5 |      90.00 |     46 |    0 |
+| CT7   |     46 |    33 |      28.26 |    553 |    0 |
+| CT8   |    179 |   130 |      27.37 |    618 |   16 |
+| CT9   |     55 |     3 |      94.55 |     19 |    0 |
+| CT10  |     90 |    28 |      68.89 |    178 |   23 |
+| Total |   3439 |   295 |     784.54 |   2863 |   45 |
+| Avg   | 343.90 | 29.50 |      78.45 | 286.30 | 4.50 |
+
+In the results table:
+
++ *#CC* is the total number of the classes of cli;
++ *#AC* is the number of cli classes affected by the upgrade from lib to lib';
++ *%Reduction* is the reduction rate of the test generation targets achieved by
+  differential fact-guided test generation, computed as (#CC - #AC) / #CC;
++ *#T* is the number of generated test methods;
++ *#FT* is the number of generated test methods that flip from pass to fail after
+  the upgrade from lib to lib.
+
+The results show that compared with the default test generation approach of
+EvoSuite, our differential fact-guided test generation achieves a 78.45% average
+reduction rate of test generation targets.  The maximum and minimum reduction
+rate are 99.11% and 27.37%, 1148 respectively. On seven of ten subjects, the
+reduction rate is over 90%.
+ 
+
+Facts used can be found at
+[[https://github.com/d-fact/tse-eval/tree/main/change-impact/facts][github/d-fact/tse-eval]].
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

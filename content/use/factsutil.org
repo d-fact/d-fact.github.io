@@ -1,0 +1,38 @@
+#+TITLE: Facts Helper
+#+weight: 30
+
+Python scripts are developed as helpers for running various experiments 
+using facts. 
+
+They can be browsed [[https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/facts-utils][here]], or you have had them if you have cloned [[../cslicer][Modified CSlicer]].
+
+** Usage
+	Before using, change =BASE_DIR= in =factutils/hislicing/env_const.py= to the local path of CSlicer.
+	
+*** Install in the virtual env
+	#+begin_src sh
+% python3 -m venv <DIR>
+% source <DIR>/bin/activate
+# install in the same pth of setup.py
+% pip3 install -e .
+	#+end_src
+
+*** Prepare data
+	The =--prepare= process will generate correct configuration files according to your =BASE_DIR= and download all project repos.
+	#+begin_src sh
+# make sure your venv is activated
+% python3 -m hislicing.main --prepare
+	#+end_src
+
+*** History Slicing
+**** Run original CSlicer for History Slicing
+	#+begin_src sh
+# make sure your venv is activated
+% python3 -m hislicing.main --cslicer ../../data/name_eval.json
+	#+end_src
+
+**** Collect facts for History Slicing
+	#+begin_src sh
+# make sure your venv is activated
+% python3 -m hislicing.main --fact ../../data/group_eval.json
+	#+end_src

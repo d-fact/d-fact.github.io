@@ -79,3 +79,7 @@ represented by a row of TAB-seperated tuples.
 
 With an input directive =.input Insert(IO=file, filename=/path/to/Insert.facts)=,
 Soufflé can read facts from the specified file.
+
+* Complete Examples
+  Complete examples of facts can be seen in
+  [[https://github.com/d-fact/tse-eval][github: tse-eval]].

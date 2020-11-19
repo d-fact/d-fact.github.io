@@ -1,0 +1,6 @@
+#+TITLE: Applications
+#+weight: 30
+
++ [[Hislicing][Semantic History Slicing]]
++ [[ChangeImpact][Change Impact Analysis]]
++ [[RTS][Regression Test Selection]]

@@ -3,6 +3,7 @@
 
 Semantic history slicing identifies the commits related to a particular high-level functional slicing criteria in change histories. In one concrete instantiation, a slicing criteria is defined in terms of a set of tests; a particular functionality is considered to be implemented if its corresponding set of tests pass. A semantic history slice (or slice for short) of the original change history is then a sub-sequence of H′ ⊆ H, i.e. a set of related commits required for the tests to pass.
 
+Following is a simplified process of history slicing using facts and grok query language.
 ** Functional slicing criteria
    A functional slicing criteria corresponds to software changes with a specific intention, such as fixing a bug or adding a new feature.
    In practice, a criteria can be defined by a set of testcases demonstrating the specific intention.
@@ -33,14 +34,15 @@ so that the testcase can still pass after the slice were
 applied on =b230a6f5=.
 
 ** Functional set
-
+   Functional set contains commits that directly or indirectly change the
+   program entities affected by tests.
 *** Test Coverage
     The snippet below is part of the facts representing test coverage.
 #+begin_src
 Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.getIgnoreHeaderCase(0)"
 Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVParser.iterator(0)"
 Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.withIgnoreHeaderCase(1)"
-Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.withAllowMissingColumnNames(0)"
+Coverage "test-CSV159-7310e5c6" "org.apache.commons.csv.CSVFormat.withHeader(1)"
 #+end_src
 
 In the following TA program, =testName= is "test-CSV159-7310e5c6",
@@ -52,4 +54,37 @@ print testName;
 cov = {testName} . Coverage
 #+end_src
 
+*** Atomic Changes
+Combining with the atomic changes facts (e.g., one fact below):
+#+begin_src
+(Update "org.apache.commons.csv.CSVFormat.withHeader(1)" "d54b339caa945f35b4b2536b1455f314e57808dd") { 
+name = "org.apache.commons.csv.CSVFormat.withHeader(1)" 
+commit_parent = "2f76dfabd14f34cb8a49df1ddaeab5ed6d0d7cbb" 
+commit = "d54b339caa945f35b4b2536b1455f314e57808dd" }
+#+end_src
+We can compute the functional set: 
+#+begin_src
+func_set = cov . ((inv @name) o @commit)
+#+end_src
 ** Compilation set
+   Compilation set contains commits that essential to the successful compilation.
+   First the closure of dependencies are used with those program entities to calculate
+   which entities are used by those covered entities.
+#+begin_src
+all_deps = call + contain + reference
+dep_entities = cov . all_deps+;
+#+end_src
+
+Then similarly commits can be computed from entities and atomic change facts.
+#+begin_src
+comp_set = dep_entities . (inv @name) . @commit;
+#+end_src
+
+** Hunk set
+   Hunk set contains commits that hunk-depend on those commits in functional set and compilation set.
+#+begin_src
+func_and_comp = func_set + comp_set
+hunk_cmt = func_and_comp . (HunkDep+);
+#+end_src
+
+The actual query script contains more to fix various issues around the three steps.

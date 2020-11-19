@@ -1,0 +1,12 @@
+#+TITLE: Atomic Changes
+#+weight: 10
+
+** Java
+Facts about atomic changes of Java projects are extracted by [[../../use/cslicer][Modified CSlicer]].
+  #+begin_src sh
+java -jar "target/cslicer-1.0.0-jar-with-dependencies.jar" -c CONFIG_FILE -e fact --ext diff
+  #+end_src
+
+  
+** C/C++
+Facts about atomic changes of C/C++ projects are extracted by [[../../use/gumtree][GumTree]].

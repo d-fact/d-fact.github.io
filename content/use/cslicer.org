@@ -1,0 +1,64 @@
+#+TITLE: Modified CSlicer
+#+weight: 30
+
+
+Some of our extractors are developed based upon the existing codebase of
+[[https://bitbucket.org/liyistc/gitslice][CSlicer]].
+
+** Build from source
+1. Clone the repo. Shallow clone of the specific branch for saving time is recommended.
+  #+begin_src sh
+git clone --depth 1  https://bitbucket.org/liyistc/gitslice.git  -b facts
+  #+end_src
+
+2. Checkout to the =facts= branch.
+  + If you use the command in step.1, you should already in this branch.
+
+3. Clone submodules. 
+  #+begin_src sh
+git submodule init
+git submodule update
+  #+end_src
+  
+4. Build with Maven. There should be a =cslicer-1.0.0-jar-with-dependencies.jar=
+   under =target/= directory if succeed.
+  #+begin_src sh
+mvn package -DskipTests 
+  #+end_src
+
+** Usage
+   Fact extractors implemented with CSlicer can be invoked with =--engine fact=
+   (short version =-e fact=) cmdline options.
+
+   Related command line options:
+   #+begin_src sh
+usage: cslicer -c <CONFIG_FILE> -e <SLICING_ENGINE>
+ -c,--config <arg>         Path to project configuration file.
+ -e,--engine <arg>         Select slicing engine:
+                           [slicer|refiner|delta|srr|hunker|fact].
+ -ext,--extractors <arg>   Choose extractors: [dep|diff|hunk|cov]
+   #+end_src
+   
+   You can also use the helper script [[https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/facts-utils/facts-utils/run.sh][run.sh]].
+
+** Configuration Files
+
+   =CONFIG_FILE= looks like the following example and there are config files in
+   =resources/file-level/orig-configs= of the CSlicer repo.
+
+#+begin_src sh
+# CSV-159.properties
+repoPath = /path/to/repo/commons-csv/.git
+sourceRoot = /path/to/repo/commons-csv/src/main/java
+classRoot = /path/to/repo/commons-csv/target/classes
+startCommit = b230a6f5
+endCommit = 7310e5c6
+buildScriptPath = /path/to/repo/commons-csv/pom.xml
+testScope = CSVParserTest#testIgnoreCaseHeaderMapping
+execPath = /path/to/gitslice/resources/file-level/jacoco-files/CSV-159-jacoco.exec
+touchSetPath = /path/to/gitslice/resources/file-level/touchset/CSV-159.touchset
+#+end_src
+
+Files specified by =execPath= and =touchSetPath= are also included in the CSlicer repo.
+
+You can batch-generate correct configuration files using [[../factsutil][facts helpers]].

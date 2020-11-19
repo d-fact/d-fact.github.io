@@ -1,0 +1,21 @@
+#+TITLE: Test Coverage
+#+weight: 20
+
+
+** Java
+Facts about atomic changes of Java projects are extracted by [[../../use/cslicer][Modified CSlicer]].
+  #+begin_src sh
+java -jar "target/cslicer-1.0.0-jar-with-dependencies.jar" -c CONFIG_FILE -e fact --ext cov
+  #+end_src
+  
+** C/C++
+   + Building projects with =--coverage= and =-fprofile-abs-path= and there would be
+     note files (=*.gcno=)
+   + After running tests, there would be count data files (=*.gcda=). 
+   + Invoke =gcov-helper report= would call =gcov= on those files to generate
+     coverage files (=*.gcov= or =*.gcov.json=)
+   + Invokde =gcov-helper ta=, which instruct =clang-node-finder=
+	 (a libtooling-based tool) to generate TA facts from coverage data
+
+   =gcov-helper= and =clang-node-finder= are included in
+   [[https://github.com/d-fact/ccxx-factext][ccxx-factext]].

@@ -1,2 +1,25 @@
 #+TITLE: Regression Test Selection
 #+weight: 30
+
+A simplified RTS process is described as follows.
+
+First we find out all program entities directly or indirectly call/reference/... into the 
+changed entities.
+
+#+begin_src 
+allchange = Update + Insert + Delete;
+alldeps = call + contain + reference;
+affected = (alldeps*) . (dom allchange);
+#+end_src
+
+Next we filter out test classes using intersection.
+#+begin_src 
+testClazz = dom TestClass;
+affectedTestclass = testClazz ^ affected;
+#+end_src
+
+Abstract classes are removed and their subclasses are selected.
+#+begin_src 
+affectedAbstract = affectedTestclass ^ (dom AbstractClass)
+result = affectedTestclass . (inv Inherit) + affectedTestclass - affectedAbstract
+#+end_src
