@@ -2,42 +2,47 @@
 #+weight: 10
 
 ** Detailed Data
-In the following table, we list relevant data of tested projects to show how
-facts re-using bring efficiency improvement.
+In the following table, we list relevant data of tested projects to show how facts re-using bring
+efficiency improvement.
 
 + Test column: "static" means all other facts except coverage information for
   each functionality, all other numbers such as 288 is the functionality ID used
-  in the DoSC data set, i.e. 
-  [[https://github.com/Chenguang-Zhu/DoSC/blob/master/meta-data/commons-io/IO-288.yml][IO-288]].
-+ Three Facts columns (#Fact, Ext, Query): shows number of lines of facts
-  generated, time used for extraction and time used for querying.
+  in the DoSC data set, i.e. [[https://github.com/Chenguang-Zhu/DoSC/blob/master/meta-data/commons-io/IO-288.yml][IO-288]].
++ Three Facts columns (#Fact, Ext, Query): shows number of lines of facts generated, time used for
+  extraction and time used for querying.
 + CSlicer column: shows time used by CSlicer on each functionality
-+ T(CSlicer) / T(Facts): the total time used for all functionalities of this
-  project (per ID), divided by total time used for fact-based approach on this
-  project. The bigger the ratio is, the more time saved by facts reusing.
-+ #(diff) / #(avg.tests): the number of lines of differential facts divided by
-  average number of dynamic facts. Since analyzing inter-version AST changes,
-  are usually time-costly work, this ratio roughly depicts quantities of changes
-  needed to be analyzed compared to the total analysis workload (Since different
-  facts come from analysis of different types, so it is only a rough
++ T(CSlicer) / T(Facts): the total time used for all functionalities of this project (per ID),
+  divided by total time used for fact-based approach on this project. The bigger the ratio is, the
+  more time saved by facts reusing.
++ #(diff) / #(avg.tests): the number of lines of differential facts divided by average number of
+  dynamic facts. Since analyzing inter-version AST changes, are usually time-costly work, this ratio
+  roughly depicts quantities of changes needed to be analyzed compared to the total analysis
+  workload (Since different facts come from analysis of different types, so it is only a rough
   indication).
-+ HistoryLength column: the number of commits we analyze, it is another
-  indicator of inter-version changes analysis workload.
-+ LOC(+/-) column: the Line of Code added or deleted in analyzed commits, also
-  for showing quantities of inter-version changes.
++ HistoryLength column: the number of commits we analyze, it is another indicator of inter-version
+  changes analysis workload.
++ LOC(+/-) column: the Line of Code added or deleted in analyzed commits, also for showing
+  quantities of inter-version changes.
 
 [[../../results_table.png]]
 
+** Which Facts are Reused
+   For each projects (identified by *ID*), quantities of facts reused are the numbers after /static/
+   since thess parts are the same among different tests (slicing criteria).
+
+   E.g., for project *IO* (apache/commons-io), 3937 facts can be reused among the five tests
+   (IO-283, IO-290, IO-305, IO-173, IO-275). And for the 5 tasks, additional 11, 28, 33, 72, 38
+   facts are needed respectively.
+
 ** Efficiency of Facts-based History Slicing: Analysis of Experiment Results
-We could see from the table that T(CSlicer) / T(Facts) becomes larger when
-#(diff) / #(avg.tests), HistoryLength becomes larger. 
+We could see from the table that T(CSlicer) / T(Facts) becomes larger when #(diff) / #(avg.tests),
+HistoryLength becomes larger.
 
-In the only case (CONFIG) when fact-based approach perform worse than CSlicer
-(indicated by T(CSlicer) / T(Facts) < 1), all of these 3 numbers (#(diff) /
-#(avg.tests), HistoryLength, LOC(+/-)) are the minimum among all projects.
+In the only case (CONFIG) when fact-based approach perform worse than CSlicer (indicated by
+T(CSlicer) / T(Facts) < 1), all of these 3 numbers (#(diff) / #(avg.tests), HistoryLength, LOC(+/-))
+are the minimum among all projects.
 
-We can show statistically the time-cost improvement are highly correlated to how
-significant the proportion of time spent on analyzing inter-version changes. The
-Pearson correlation coefficient is 0.84 (p=0.0051) between T(CSlicer) / T(Facts)
-and #(diff) / #(avg.tests), and 0.82 (p=0.0069) between T(CSlicer) / T(Facts)
-and HistoryLength.
+We can show statistically the time-cost improvement are highly correlated to how significant the
+proportion of time spent on analyzing inter-version changes. The Pearson correlation coefficient is
+0.84 (p=0.0051) between T(CSlicer) / T(Facts) and #(diff) / #(avg.tests), and 0.82 (p=0.0069)
+between T(CSlicer) / T(Facts) and HistoryLength.

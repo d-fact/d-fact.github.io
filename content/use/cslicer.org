@@ -2,13 +2,12 @@
 #+weight: 30
 
 
-Some of our extractors are developed based upon the existing codebase of
-[[https://bitbucket.org/liyistc/gitslice][CSlicer]].
+Some of our extractors are developed based on CSlicer, and the modified version is [[https://github.com/d-fact/CSlicer][here]].
 
 ** Build from source
-1. Clone the repo. Shallow clone of the specific branch for saving time is recommended.
+1. Clone the repo.
   #+begin_src sh
-git clone --depth 1  https://bitbucket.org/liyistc/gitslice.git  -b facts
+git clone https://github.com/d-fact/CSlicer
   #+end_src
 
 2. Checkout to the =facts= branch.
@@ -39,7 +38,7 @@ usage: cslicer -c <CONFIG_FILE> -e <SLICING_ENGINE>
  -ext,--extractors <arg>   Choose extractors: [dep|diff|hunk|cov]
    #+end_src
    
-   You can also use the helper script [[https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/facts-utils/facts-utils/run.sh][run.sh]].
+   You can also use the helper script [[https://github.com/d-fact/CSlicer/blob/main/resources/facts/facts-utils/facts-utils/run.sh][run.sh]].
 
 ** Configuration Files
 

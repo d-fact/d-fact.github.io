@@ -64,7 +64,7 @@ commit = "d54b339caa945f35b4b2536b1455f314e57808dd" }
 #+end_src
 We can compute the functional set: 
 #+begin_src
-func_set = cov . ((inv @name) o @commit)
+func_set = cov . (inv @name) . @commit
 #+end_src
 ** Compilation set
    Compilation set contains commits that essential to the successful compilation.

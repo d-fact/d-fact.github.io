@@ -19,7 +19,7 @@ measuring how many test generation targets are pruned. The more classes pruned,
 the fewer test generation targets needed to be handled, leadingt to greater
 improvement on the efficiency.
 
-Scripts for running experiments are also included in [[https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/evosuite-eval-pipeline/run-pipeline.py][bitbucket:gitslice/run-pipeline.py]].
+Scripts for running experiments are also included in [[https://github.com/d-fact/CSlicer/blob/main/resources/facts/evosuite-eval-pipeline/run-pipeline.py][CSlicer/run-pipeline.py]].
 
 ** Subjects
 Ten <cli, lib, lib'> tuples are selected from the [[https://dblp.org/rec/conf/issre/GyoriLHM18.html][library upgrade dataset]]

@@ -5,8 +5,8 @@
 This page contain links to guides of various tools we developed or modified to support various tasks based on differential facts.
 
 
-+ [[cslicer][Modified CSlicer]]
++ [[../use/cslicer][Modified CSlicer]]
 
-+ [[factsutil][Facts Helper]]
++ [[../use/factsutil][Facts Helper]]
 
-+ [[gumtree][C/C++ Atomic Changes]]
++ [[../use/gumtree][C/C++ Atomic Changes]]

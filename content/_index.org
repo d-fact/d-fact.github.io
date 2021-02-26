@@ -1,20 +1,82 @@
 #+TITLE: Homepage
 
-* Software Evolution Management with Differential Facts 
-Differential facts is a uniform exchangeable representation of software changes supporting efficient querying and manipulation, based on the existing concept of program facts. 
-Together with intra-version facts, we can store and then analyze abundant information about software evolution, 
+* Software Evolution Management with Differential Facts
+Differential facts is a uniform exchangeable representation of software changes supporting efficient querying and manipulation, based on the existing concept of program facts.
+Together with intra-version facts, we can store and then analyze abundant information about software evolution,
 thus lots of questions can be answered by querying related facts.
 
 * Facts
   We use Tuple-Attribute languages and Datalog to represent facts.
 
-  See [[fact/fmt][Facts Format]] for details.
+  See [[fact][Facts Format]] for details.
 
 * Extractors
   Various extractors are implemented for extracting inter- or intra-version facts from software repos.
 
-  See [[ext/ext][Extractors]] for details.
+  See [[ext][Extractors]] for details.
 * Applications
   We demonstrate the use of differential facts on several evolution management tasks.
-  
+
   See [[app][Applications]] for details.
+
+* How to Reproduce
+** Semantic History Slicing
+   To make reproducing the evaluations in the paper easier, we created dockers for running
+   experiments. Clone the repo [[https://github.com/d-fact/eval-runner-docker][here]].
+
+   Firstly build with =docker-compose=, which would build the extractors, query engines and setup
+   python utilities for running the evaluation.
+   #+begin_src sh
+docker-compose build
+   #+end_src
+
+   There are several =command= clauses commented out in =docker-compose.yml= for different stages,
+   different evaluations or different inputs.
+
+   Enable one of them at a time (comment out others) for running cslicer (baseline), facts
+   extraction and query.
+
+   #+begin_src sh
+command: hislicing.main --prepare /data/json/name_eval.json -l info
+command: hislicing.main --cslicer /data/json/name_one.json
+command: hislicing.main --fact /data/json/group_one.json
+command: run_grok -p /data/resources/file-level/output/facts -g /data/json/group_one.json -s /data/grok-scripts/slice_ver.ql -o slice.out -l info
+   #+end_src
+
+   + =--prepare= would clone several projects from Github and generate correct configurations for
+     evaluation on the fly.
+   + =--cslicer= would run baseline and produce results
+   + =--fact= would run facts extraction
+   + =run_grok= would use jgrok to execute the query
+   + =name_one.json= and =group_one.json= could be replaced by =name_eval.json= and
+     =group_eval.json= respectively to run on all subjects.
+
+*** Inspect results
+	Outputs are in the data volume created by =docker-compose=. (Data volume will only be created
+	after =docker-compose up=)
+
+	+ Mountpoint of the volume can be checked using =docker volume inspect facts-utils_datavol=.
+	  It could be =/var/lib/docker/volumes/facts-utils_datavol/_data= on some systems.
+	+ CSlicer outputs are located at =mountpoint/resources/file-level/output/cslicer=.
+	+ Facts are located at =mountpoint/resources/file-level/output/facts=.
+	+ Query results are located at =mountpoint/grok-run/grok_results/=.
+
+*** Run other projects (other than those used in evaluations)
+	There are also a =Dockerfile= under =gitslice= directory, which can be used to run with any other
+	projects. It requires a configuration file (=project.properties=) and target projects. You may
+	need to build the project manually and config the paths correctly. You can refer [[use/cslicer][Modified CSlicer]]
+	for more details on configuration files.
+
+   #+begin_src sh
+docker run -it --rm -v /path/on/the/host:/data cslicer-slim -c /data/project.properties -e dl -exp dep diff hunk
+   #+end_src
+
+*** Alternative: running without docker
+   Check out [[use/factsutil][Facts Helper]] for running manually without containers.
+
+** Change Impact Analysis
+   Check [[app/ChangeImpact][Change Impact Analysis]] for how to running experiments.
+
+
+* Data Repository
+  Also check [[https://github.com/d-fact/data-eval][github:data-eval]] for facts and query scripts used in the evaluation.

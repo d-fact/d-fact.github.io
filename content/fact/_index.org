@@ -1,7 +1,7 @@
 #+title: Facts
 #+weight: 10
 
-[[https://en.wikipedia.org/wiki/Datalog][Datalog]] and [[http://swag.uwaterloo.ca/pbs/papers/ta.html][Tuple-Attribute]] and Datalog are two languages used in current factbase implementations.
+[[https://en.wikipedia.org/wiki/Datalog][Datalog]] and [[https://www.swag.uwaterloo.ca/grok/grokdoc/ta_rsf.html][Tuple-Attribute]] and Datalog are two languages used in current factbase implementations.
 
 
 * Tuple-Attribute Language

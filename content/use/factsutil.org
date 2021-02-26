@@ -4,7 +4,7 @@
 Python scripts are developed as helpers for running various experiments 
 using facts. 
 
-They can be browsed [[https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/facts-utils][here]], or you have had them if you have cloned [[../cslicer][Modified CSlicer]].
+They can be browsed [[https://github.com/d-fact/CSlicer/tree/main/resources/facts/facts-utils][here]], or you have had them if you have cloned [[../cslicer][Modified CSlicer]].
 
 ** Usage
 	Before using, change =BASE_DIR= in =factutils/hislicing/env_const.py= to the local path of CSlicer.
@@ -21,7 +21,7 @@ They can be browsed [[https://bitbucket.org/liyistc/gitslice/src/facts/resources
 	The =--prepare= process will generate correct configuration files according to your =BASE_DIR= and download all project repos.
 	#+begin_src sh
 # make sure your venv is activated
-% python3 -m hislicing.main --prepare
+% python3 -m hislicing.main --prepare ../../data/name_eval.json
 	#+end_src
 
 *** History Slicing
