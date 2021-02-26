@@ -28,7 +28,7 @@ facts re-using bring efficiency improvement.
 
 [[../../results_table.png]]
 
-** Efficiency of Facts-based History Slicing: Analysis of Experiment Results 
+** Efficiency of Facts-based History Slicing: Analysis of Experiment Results
 We could see from the table that T(CSlicer) / T(Facts) becomes larger when
 #(diff) / #(avg.tests), HistoryLength becomes larger. 
 
