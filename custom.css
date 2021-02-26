@@ -20,10 +20,16 @@ html {
 	line-height: 1.3em;
 }
 
+.gdoc-markdown h1,
+.gdoc-markdown h2,
+.gdoc-markdown h3,
+.gdoc-markdown h4,
+.gdoc-markdown h5,
+.gdoc-markdown h6,
 h1,h2,h3,h4,h5,h6 {
 	/*font-weight: 400; */
 	font-family: "Avenir", "Noto Sans", "Helvetica", sans;
-	line-height: 1.5em;
+	line-height: 1.3em;
 }
 body {
 	color: black;
