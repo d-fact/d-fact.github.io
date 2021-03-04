@@ -6,7 +6,7 @@ where we try to find out the client classes affected by a library upgrade.</p><p
 (<a href=https://github.com/EvoSuite/evosuite>EvoSuite</a> was used)
 to only use these affected test classes as the test targets;</p></li><li><p>Compare the results of guided test generation with those original EvoSuite,</p></li></ul><p>measuring how many test generation targets are pruned. The more classes pruned,
 the fewer test generation targets needed to be handled, leadingt to greater
-improvement on the efficiency.</p><p>Scripts for running experiments are also included in <a href=https://bitbucket.org/liyistc/gitslice/src/facts/resources/facts/evosuite-eval-pipeline/run-pipeline.py>bitbucket:gitslice/run-pipeline.py</a>.</p><div id=outline-container-headline-1 class=outline-3><h3 id=headline-1>Subjects</h3><div id=outline-text-headline-1 class=outline-text-3><p>Ten &lt;cli, lib, lib'> tuples are selected from the <a href=https://dblp.org/rec/conf/issre/GyoriLHM18.html>library upgrade dataset</a>
+improvement on the efficiency.</p><p>Scripts for running experiments are also included in <a href=https://github.com/d-fact/CSlicer/blob/main/resources/facts/evosuite-eval-pipeline/run-pipeline.py>CSlicer/run-pipeline.py</a>.</p><div id=outline-container-headline-1 class=outline-3><h3 id=headline-1>Subjects</h3><div id=outline-text-headline-1 class=outline-text-3><p>Ten &lt;cli, lib, lib'> tuples are selected from the <a href=https://dblp.org/rec/conf/issre/GyoriLHM18.html>library upgrade dataset</a>
 created by Gyori et al. The selection criterion is for each tuple, upgrading
 lib to lib' should make at least one developer-written test of the cli flip from
 pass (✔) to fail (✘).
